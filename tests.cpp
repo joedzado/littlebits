@@ -66,7 +66,6 @@ int main() {
     std::println("Thread {} set the bool.", duration);
     atom.store(false);
   };
-  atom.store(false);
   std::thread t1(job);
   std::thread t2(job);
   t1.join();
