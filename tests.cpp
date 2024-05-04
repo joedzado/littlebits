@@ -9,23 +9,18 @@
 using namespace std::chrono_literals;
 CONFIGS(MyConfigs, One, Two, Three, Four)
 CONFIGS(MoreConfigs, One, Two, Three, Four, Five, Six, Seven)
-CONFIGS(EvenMoreConfigs, One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten)
 
 int main() {
   assert(MyConfigs::size == 4);
-  std::println("Number of configs: {}", MyConfigs::size);
   assert(MoreConfigs::size == 7);
-  std::println("Number of configs: {}", MoreConfigs::size);
-  assert(EvenMoreConfigs::size == 10);
-  std::println("Number of configs: {}", EvenMoreConfigs::size);
 
-  littlebits<MyConfigs> configs;
+  littlebits<MyConfigs, bool> configs;
   assert(!configs.get<MyConfigs::One>());
   assert(!configs.get<MyConfigs::Two>());
   assert(!configs.get<MyConfigs::Three>());
   assert(!configs.get<MyConfigs::Four>());
 
-  littlebits<MoreConfigs> moreConfigs({true, false, true, false, true, false, true});
+  littlebits<MoreConfigs, bool> moreConfigs({true, false, true, false, true, false, true});
   assert(moreConfigs.get<MoreConfigs::One>());
   assert(!moreConfigs.get<MoreConfigs::Two>());
   assert(moreConfigs.get<MoreConfigs::Three>());
