@@ -1,9 +1,7 @@
 #include "littlebits.h"
 #include <cassert>
 #include <chrono>
-#include <format>
 #include <future>
-#include <print>
 #include <random>
 
 using namespace std::chrono_literals;
@@ -11,7 +9,6 @@ CONFIGS(MyConfigs, One, Two, Three, Four)
 CONFIGS(MoreConfigs, One, Two, Three, Four, Five, Six, Seven)
 
 void booltest() {
-  std::println("Boolean test.");
   assert(MyConfigs::size == 4);
   assert(MoreConfigs::size == 7);
 
@@ -53,7 +50,6 @@ void booltest() {
     while (!atom.compare_exchange_strong(expected, true)) {
       expected = false;
     }
-    std::println("Thread {} set the bool.", duration);
     atom.store(false);
   };
   std::thread t1(job);
@@ -62,7 +58,6 @@ void booltest() {
   t2.join();
 }
 void inttest() {
-  std::println("Integer test.");
   littlebits<MyConfigs, int> configs;
   assert(configs.get<MyConfigs::One>() == 0);
   assert(configs.get<MyConfigs::Two>() == 0);
@@ -78,5 +73,6 @@ void inttest() {
 int main() {
   booltest();
   inttest();
+  std::printf("\033[1;32mAll tests passed.\033[0m\n");
   return 0;
 }
