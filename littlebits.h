@@ -1,9 +1,9 @@
 #pragma once
 #include <array>
 #include <atomic>
+#include <print>
 #include <ranges>
 #include <type_traits>
-
 namespace {
 struct Base {};
 } // namespace
@@ -18,14 +18,14 @@ template <typename EnumProvider, typename Type,
           typename = std::enable_if_t<std::is_base_of_v<Base, EnumProvider>>>
 class littlebits {
 public:
-  littlebits() : configs{false} {}
-  explicit littlebits(std::array<Type, EnumProvider::size> bools) {
-    std::ranges::copy(bools, configs.begin());
+  littlebits() : configs{} {}
+  explicit littlebits(std::array<Type, EnumProvider::size> values) {
+    std::ranges::copy(values, configs.begin());
   }
-  template <int Config> auto get() { return configs[Config].load(); }
+  template <int Config> Type get() { return configs[Config].load(); }
   template <int Config> auto &atomic() { return configs[Config]; }
   template <int Config> auto set(Type &&value) { configs[Config].store(std::forward<Type>(value)); }
 
 private:
-  std::array<std::atomic<bool>, EnumProvider::size> configs;
+  std::array<std::atomic<Type>, EnumProvider::size> configs;
 };

@@ -10,7 +10,8 @@ using namespace std::chrono_literals;
 CONFIGS(MyConfigs, One, Two, Three, Four)
 CONFIGS(MoreConfigs, One, Two, Three, Four, Five, Six, Seven)
 
-int main() {
+void booltest() {
+  std::println("Boolean test.");
   assert(MyConfigs::size == 4);
   assert(MoreConfigs::size == 7);
 
@@ -30,20 +31,14 @@ int main() {
   assert(moreConfigs.get<MoreConfigs::Seven>());
 
   auto &atom = moreConfigs.atomic<MoreConfigs::One>();
-  auto time = std::chrono::system_clock::now();
-  auto a2 = std::async(std::launch::async, [&atom, &time]() {
+
+  auto a2 = std::async(std::launch::async, [&atom]() {
     std::this_thread::sleep_for(250ms);
     atom.store(false);
-    time = std::chrono::system_clock::now();
     atom.notify_all();
   });
   std::atomic<bool> expected = true;
   atom.wait(true);
-
-  auto delta = std::chrono::system_clock::now() - time;
-  std::println("After thread time: {}", delta);
-
-  std::println("Thread complete.");
 
   // Done waiting, it's false.
   assert(false == moreConfigs.get<MoreConfigs::One>());
@@ -65,5 +60,23 @@ int main() {
   std::thread t2(job);
   t1.join();
   t2.join();
+}
+void inttest() {
+  std::println("Integer test.");
+  littlebits<MyConfigs, int> configs;
+  assert(configs.get<MyConfigs::One>() == 0);
+  assert(configs.get<MyConfigs::Two>() == 0);
+  assert(configs.get<MyConfigs::Three>() == 0);
+
+  littlebits<MyConfigs, int> moreConfigs({1, 2, 3, 4});
+  assert(moreConfigs.get<MyConfigs::One>() == 1);
+  assert(moreConfigs.get<MyConfigs::Two>() == 2);
+  assert(moreConfigs.get<MyConfigs::Three>() == 3);
+  assert(moreConfigs.get<MyConfigs::Four>() == 4);
+}
+
+int main() {
+  booltest();
+  inttest();
   return 0;
 }
