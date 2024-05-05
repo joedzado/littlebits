@@ -1,1 +1,3 @@
-/buck-out
+.DS_Store
+buck-out
+prelude
